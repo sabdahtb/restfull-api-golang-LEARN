@@ -4,12 +4,17 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sabdahtb/config"
 	"github.com/sabdahtb/controller"
+	"github.com/sabdahtb/repository"
+	"github.com/sabdahtb/service"
 	"gorm.io/gorm"
 )
 
 var (
 	db             *gorm.DB                  = config.SetupDBConnection()
-	authController controller.AuthController = controller.NewAuthController()
+	userRepository repository.UserRepository = repository.NewUserRepository(db)
+	jwtService     service.JWTService        = service.NewJWTService()
+	authService    service.AuthService       = service.NewAuthService(userRepository)
+	authController controller.AuthController = controller.NewAuthController(authService, jwtService)
 )
 
 func main() {

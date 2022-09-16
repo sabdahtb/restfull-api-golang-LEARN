@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
+	"github.com/sabdahtb/entity"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -19,16 +20,17 @@ func SetupDBConnection() *gorm.DB {
 	dbUser := os.Getenv("DB_USER")
 	dbPass := os.Getenv("DB_PASS")
 	dbName := os.Getenv("DB_NAME")
-	dbhost := os.Getenv("DB_HOST")
+	dbHost := os.Getenv("DB_HOST")
 
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?charset=utf8mb4&parseTime=True&loc=Local", dbUser, dbPass, dbhost, dbName)
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?charset=utf8mb4&parseTime=True&loc=Local", dbUser, dbPass, dbHost, dbName)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
+		fmt.Println((err))
 		panic("Failed connect to DB")
 	}
 
-	// db.AutoMigrate()
+	db.AutoMigrate(&entity.Book{}, &entity.User{})
 
 	return db
 }

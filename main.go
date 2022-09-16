@@ -1,6 +1,9 @@
 package main
 
 import (
+	"time"
+
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/sabdahtb/config"
 	"github.com/sabdahtb/controller"
@@ -20,6 +23,18 @@ var (
 func main() {
 	defer config.CloseDBConnection(db)
 	r := gin.Default()
+
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"*"},
+		AllowHeaders:     []string{"*"},
+		ExposeHeaders:    []string{"*"},
+		AllowCredentials: true,
+		AllowOriginFunc: func(origin string) bool {
+			return origin == "*"
+		},
+		MaxAge: 12 * time.Hour,
+	}))
 
 	authRoutes := r.Group("api/auth")
 	{
